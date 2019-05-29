@@ -5,6 +5,7 @@
 		<title>Prit | Portfolio</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css' integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 
@@ -40,28 +41,48 @@
 				var data;
 
 					function mycounter(){
-					document.body.classList.remove('is-preload');
-					var ref = firebase.database().ref('Total Visit').once('value').then(function(snapshot){
-						data = snapshot.val();
-						var value = data + 1;
-						firebase.database().ref('Total Visit').set(value);
+						document.body.classList.remove('is-preload');
+						var ref = firebase.database().ref('Total Visit').once('value').then(function(snapshot){
+							data = snapshot.val();
+							var value = data + 1;
+							firebase.database().ref('Total Visit').set(value);
 
-						var flag1=0;
-					if(window.localStorage.getItem('visit')===null){
-						var messagesRef = firebase.database().ref('IP');
-							var newMessageRef = messagesRef.push();
-							newMessageRef.set({ip : address});
-							
-							var ref = firebase.database().ref('Unique Visit').once('value').then(function(snapshot){
-								data = snapshot.val();
-								var value = data + 1;
-								firebase.database().ref('Unique Visit').set(value);
-							});
-							window.localStorage.setItem('visit','1');
-					}
-					return;
-					});
-				};
+							var flag1=0;
+							var rootRef = firebase.database().ref('IP');
+
+						rootRef.on('value', gotData);
+
+						function gotData(data){
+							var ips = data.val();
+							var keys = Object.keys(ips);
+						
+							for (var i = 0;i<keys.length;i++){
+								var k = keys[i];
+								var test = ips[k].ip;
+									if(test==address){
+										flag1=1;
+										break;
+									}
+									else{
+										flag1=-1;
+									}
+							}
+
+							if(flag1==-1){
+								var messagesRef = firebase.database().ref('IP');
+								var newMessageRef = messagesRef.push();
+								newMessageRef.set({ip : address});
+								
+								var ref = firebase.database().ref('Unique Visit').once('value').then(function(snapshot){
+									data = snapshot.val();
+									var value = data + 1;
+									firebase.database().ref('Unique Visit').set(value);
+								});
+							}
+						}
+						return;
+						});
+					};
 
 				</script>
 	
@@ -119,9 +140,10 @@
 						-->
 						<footer>
 							<ul class="icons">
-								<li><a href="https://github.com/pritsahkar" class="fa-github" target="_blank">Github</a></li>
-								<li><a href="https://www.instagram.com/prit_patel2000/" class="fa-instagram" target="_blank">Instagram</a></li>
-								<li><a href="mailto:pritsahkar2000@gmail.com" class="fa-envelope-o" target="_blank">Gmail</a></li>
+								<li><a href="https://github.com/pritsahkar" class="fa-github" style="font-family: FontAwesome;">Github</a></li>
+								<li><a href="https://www.instagram.com/prit_patel2000/" class="fa-instagram" style="font-family: FontAwesome;">Instagram</a></li>
+								<li><a href="mailto:pritsahkar2000@gmail.com" class="fa-envelope-o" style="font-family: FontAwesome;">Gmail</a></li>
+								<li><a href="https://play.google.com/store/apps/developer?id=TeQ+Prit" class="fab fa-google-play">Play-store</a></li>
 							</ul>
 						</footer>
 					</section>
